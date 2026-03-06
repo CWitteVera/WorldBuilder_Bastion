@@ -7,8 +7,9 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>BastionBuilder</AssemblyName>
     <RootNamespace>BastionBuilder.App</RootNamespace>
-    <ApplicationIcon>Resources\bastion.ico</ApplicationIcon>
+    <ApplicationIcon Condition="Exists('Resources\bastion.ico')">Resources\bastion.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\BastionBuilder.Application\BastionBuilder.Application.csproj" />
