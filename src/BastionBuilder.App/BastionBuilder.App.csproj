@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>BastionBuilder</AssemblyName>
+    <RootNamespace>BastionBuilder.App</RootNamespace>
+    <ApplicationIcon>Resources\bastion.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BastionBuilder.Application\BastionBuilder.Application.csproj" />
+    <ProjectReference Include="..\BastionBuilder.Domain\BastionBuilder.Domain.csproj" />
+    <ProjectReference Include="..\BastionBuilder.Export\BastionBuilder.Export.csproj" />
+    <ProjectReference Include="..\BastionBuilder.Persistence.Sqlite\BastionBuilder.Persistence.Sqlite.csproj" />
+    <ProjectReference Include="..\BastionBuilder.Rules\BastionBuilder.Rules.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bastion.ico" Condition="Exists('Resources\bastion.ico')" />
+  </ItemGroup>
+</Project>
