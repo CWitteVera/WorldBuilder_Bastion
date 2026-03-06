@@ -1,16 +1,2 @@
 <Solution>
-  <Folder Name="/src/">
-    <Project Path="src/BastionBuilder.App/BastionBuilder.App.csproj" />
-    <Project Path="src/BastionBuilder.Application/BastionBuilder.Application.csproj" />
-    <Project Path="src/BastionBuilder.Domain/BastionBuilder.Domain.csproj" />
-    <Project Path="src/BastionBuilder.Export/BastionBuilder.Export.csproj" />
-    <Project Path="src/BastionBuilder.Persistence.Sqlite/BastionBuilder.Persistence.Sqlite.csproj" />
-    <Project Path="src/BastionBuilder.Rules/BastionBuilder.Rules.csproj" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/BastionBuilder.Application.Tests/BastionBuilder.Application.Tests.csproj" />
-    <Project Path="tests/BastionBuilder.Domain.Tests/BastionBuilder.Domain.Tests.csproj" />
-    <Project Path="tests/BastionBuilder.Export.Tests/BastionBuilder.Export.Tests.csproj" />
-    <Project Path="tests/BastionBuilder.Rules.Tests/BastionBuilder.Rules.Tests.csproj" />
-  </Folder>
 </Solution>

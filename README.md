@@ -17,6 +17,27 @@ The application uses **SQLite** for efficient data storage and retrieval.
 
 Data can be exported in both **DM** and **Public JSON** formats, enhancing usability for different gaming scenarios.
 
+## Building & Testing
+
+```bash
+dotnet build      # build all projects
+dotnet test       # run all unit tests
+```
+
+## Publishing the App (Windows x64)
+
+Run the PowerShell script to produce a self-contained single-file executable:
+
+```powershell
+./scripts/publish-win-x64.ps1
+```
+
+The published executable is written to:
+
+```
+src/BastionBuilder.App/bin/Release/net8.0-windows/win-x64/publish/BastionBuilder.exe
+```
+
 ## Publishing Steps
 
 When ready, follow these steps to publish your stronghold:

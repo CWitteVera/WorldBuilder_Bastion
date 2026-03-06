@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <!-- Treat warnings as errors for all projects except the WPF app -->
+    <TreatWarningsAsErrors Condition="'$(UseWPF)' != 'true'">true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>
