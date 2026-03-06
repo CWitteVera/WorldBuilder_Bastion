@@ -1,200 +1,76 @@
-# BastionBuilder
+# BastionBuilder (v0.1 scaffold)
 
-> **Windows-only offline application** for creating complex bastions for tabletop RPG campaigns.  
-> Built with .NET 8, WPF, MVVM, and Clean Architecture.
+Windows-only offline stronghold mapper + rules tracker for a DM. The design goal is **“download → run”** with **no extra installs** for end users.
 
----
+## Goals (v1)
+- Track a stronghold as a graph of **Nodes** (rooms/areas) connected by **Edges** (doors/windows/stairs/hatches).
+- Track perimeter **Walls** as **WallGroups** containing **WallSegments** (material, HP, quality, reinforcements).
+- Support **shared walls** between adjacent nodes (single segment objects, not duplicated).
+- Support **openings split segments** (doors/windows replace wall segment spans).
+- Support **secrets** (secret edges/features) with DM-only metadata until revealed.
+- Provide DM-guided discovery support via **Discoverability (0–20)**.
+- Provide **node-local reveal** with propagation to the far side only after:
+  - physical entry, or
+  - remote-view “enter” (scry/clairvoyance).
+- Persist locally via **SQLite**.
+- Export:
+  - **DM export** (full data + discoverability + leak flags)
+  - **Public export** (node callouts only, e.g. `Discovered — "False Painting Door"`)
 
-## Features
+## Tech stack
+- **.NET 8**
+- **WPF** UI (Windows-only)
+- **MVVM** pattern
+- **Clean Architecture** style layering
 
-- **Nodes** – rooms, corridors, and areas with discoverability DCs (0–20) and height stubs
-- **WallGroups / WallSegments** – shared walls with additive reinforcements, opening splits, and height-scaling stubs
-- **Edges** – doors, windows, stairs, hatches, and archways with full **lock / trap / alarm** fields
-- **Features** – points of interest with **secret visibility states** (Hidden → Discovered → Revealed) and **reveal propagation**
-- **SQLite persistence** – offline, single-file database via Entity Framework Core
-- **JSON export** – separate **Public** (player-visible) and **DM** (full) exports
+## Solution structure
+- `src/BastionBuilder.Domain`  
+  Pure domain entities/value objects (no UI, no persistence).
+- `src/BastionBuilder.Rules`  
+  Rules engine modules (depends only on Domain): shared walls, opening split, discoverability, reveal propagation, reinforcements (additive), height scaling (stub).
+- `src/BastionBuilder.Application`  
+  Use cases (commands/queries) + interfaces/ports. UI talks only to this layer.
+- `src/BastionBuilder.Persistence.Sqlite`  
+  SQLite implementation (schema/migrations + repositories).
+- `src/BastionBuilder.Export`  
+  JSON export DTOs + generators for DM/Public exports.
+- `src/BastionBuilder.App`  
+  WPF UI shell (MVVM).
+- `tests/*`  
+  Unit tests, especially for `Rules` modules to “lock down” behavior.
 
----
+## Build & run (dev)
+Prereqs:
+- Visual Studio 2022 (or later) with .NET desktop workload **or** .NET 8 SDK
 
-## Solution Structure
+Commands:
+- `dotnet build`
+- `dotnet test`
+- Run the WPF app from Visual Studio or:
+  - `dotnet run --project src/BastionBuilder.App`
 
-```
-BastionBuilder.sln
-├─ src/
-│  ├─ BastionBuilder.Domain          – Entities & enums (Node, WallGroup, Edge, Feature …)
-│  ├─ BastionBuilder.Rules           – Pure business rules (WallSegmentRules, DiscoverabilityRules)
-│  ├─ BastionBuilder.Application     – MVVM ViewModels, RelayCommands, repository/export interfaces
-│  ├─ BastionBuilder.Persistence.Sqlite – EF Core + SQLite DbContext & repository
-│  ├─ BastionBuilder.Export          – JSON export service (Public + DM DTOs)
-│  └─ BastionBuilder.App             – WPF entry point (Windows-only, net8.0-windows)
-└─ tests/
-   ├─ BastionBuilder.Domain.Tests
-   ├─ BastionBuilder.Rules.Tests
-   ├─ BastionBuilder.Application.Tests
-   └─ BastionBuilder.Export.Tests
-```
+## Publish (single-file exe, no installs)
+Target: produce a self-contained single-file `.exe` suitable for “unzip and run”.
 
----
-
-## Prerequisites
-
-| Requirement | Version |
-|---|---|
-| Windows | 10 22H2 or later (WPF requires Windows) |
-| .NET SDK | **8.0** ([download](https://dotnet.microsoft.com/download/dotnet/8)) |
-
-> The test and library projects are cross-platform (`net8.0`).  
-> Only `BastionBuilder.App` is Windows-only (`net8.0-windows`).
-
----
-
-## Build
-
+Example (x64):
 ```powershell
-# Clone the repository
-git clone https://github.com/CWitteVera/WorldBuilder_Bastion.git
-cd WorldBuilder_Bastion
-
-# Restore packages and build the whole solution
-dotnet build BastionBuilder.slnx
+dotnet publish src/BastionBuilder.App -c Release -r win-x64 `
+  /p:PublishSingleFile=true `
+  /p:SelfContained=true `
+  /p:PublishReadyToRun=true
 ```
 
----
+Output is under:
+- `src/BastionBuilder.App/bin/Release/net8.0-windows/win-x64/publish/`
 
-## Run Tests
+## Design docs
+Place your living rules/docs under `docs/` (player guide, DM rules, checklists). The application should implement these as the source-of-truth behaviors.
 
-The test suite runs on any OS where .NET 8 is installed:
+## Development approach (“lock modules”)
+1. Stabilize **Domain** types early.
+2. Implement one Rules module at a time with unit tests.
+3. Keep UI thin: no rule logic in WPF code-behind.
+4. Treat passing tests as “locked” behavior; refactors must preserve tests.
 
-```powershell
-dotnet test BastionBuilder.slnx --filter "FullyQualifiedName!~BastionBuilder.App"
-```
-
-Or run individual test projects:
-
-```powershell
-dotnet test tests/BastionBuilder.Domain.Tests
-dotnet test tests/BastionBuilder.Rules.Tests
-dotnet test tests/BastionBuilder.Application.Tests
-dotnet test tests/BastionBuilder.Export.Tests
-```
-
----
-
-## Run the Application (Windows only)
-
-```powershell
-dotnet run --project src/BastionBuilder.App
-```
-
-The SQLite database is stored at:
-
-```
-%LOCALAPPDATA%\BastionBuilder\bastion.db
-```
-
----
-
-## Publish
-
-### Self-contained single-file executable (Windows x64)
-
-```powershell
-dotnet publish src/BastionBuilder.App `
-  --configuration Release `
-  --runtime win-x64 `
-  --self-contained true `
-  --output ./publish `
-  -p:PublishSingleFile=true `
-  -p:IncludeNativeLibrariesForSelfExtract=true
-```
-
-The output will be `publish/BastionBuilder.exe` – copy it anywhere on a Windows machine.
-
-### Framework-dependent (requires .NET 8 installed on target)
-
-```powershell
-dotnet publish src/BastionBuilder.App `
-  --configuration Release `
-  --runtime win-x64 `
-  --self-contained false `
-  --output ./publish
-```
-
----
-
-## Export Formats
-
-Both exports are accessible from the toolbar inside the application.
-
-### Public JSON (`*_public_*.json`)
-
-Omits hidden secrets. Suitable for sharing with players.
-
-```json
-{
-  "id": "...",
-  "name": "Fort Danger",
-  "nodes": [
-    {
-      "name": "Entrance Hall",
-      "publicDescription": "A grand vaulted entrance.",
-      "visibleFeatures": []
-    }
-  ],
-  "edges": [
-    {
-      "name": "Main Gate",
-      "kind": "Door",
-      "hasLock": true,
-      "hasTrap": false,
-      "hasAlarm": true
-    }
-  ]
-}
-```
-
-### DM JSON (`*_dm_*.json`)
-
-Includes everything: hidden secrets, lock/trap/alarm details, wall statistics, reveal chains.
-
-```json
-{
-  "edges": [
-    {
-      "name": "Hidden Door",
-      "isSecret": true,
-      "visibilityState": "Hidden",
-      "lockDC": 18,
-      "trapKind": "poison needle",
-      "trapDetectDC": 14,
-      "alarmThreshold": 0
-    }
-  ],
-  "wallGroups": [
-    {
-      "segments": [
-        {
-          "baseAC": 15, "effectiveAC": 18,
-          "baseHP": 27, "effectiveHP": 42,
-          "heightScaleFactor": 1.0,
-          "solidFraction": 0.9
-        }
-      ]
-    }
-  ]
-}
-```
-
----
-
-## Architecture Notes
-
-| Concept | Implementation |
-|---|---|
-| Discoverability DC | 0 = always visible; 1–20 = Perception check required |
-| Secret visibility | `Hidden → Discovered → Revealed`; reveal propagates to linked Features |
-| Additive reinforcements | `EffectiveAC = BaseAC + Σ BonusAC`, `EffectiveHP = BaseHP + Σ BonusHP` |
-| Opening splits | Each opening reduces the wall's solid fraction; `SolidFraction = clamp(1 − Σ SplitPercentage, 0, 1)` |
-| Height scaling | `HeightScaleFactor = max(0.1, HeightFeet / 10.0)` – stub for future cover/damage formulas |
-| SQLite | EF Core `EnsureCreated`; database path in `%LOCALAPPDATA%\BastionBuilder\` |
-
+## License
+TBD.
