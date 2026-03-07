@@ -10,6 +10,7 @@
     <SolidColorBrush x:Key="SecondaryFgBrush"   Color="#AAAACC"/>
     <SolidColorBrush x:Key="DangerBrush"        Color="#E55353"/>
     <SolidColorBrush x:Key="SuccessBrush"       Color="#33D9B2"/>
+    <SolidColorBrush x:Key="StatusBarBrush"     Color="#1A1A2E"/>
 
     <!-- Base window/control style -->
     <Style TargetType="Window">
@@ -28,11 +29,14 @@
     </Style>
 
     <Style TargetType="TextBox">
-        <Setter Property="Background"    Value="{StaticResource SurfaceBrush}"/>
-        <Setter Property="Foreground"    Value="{StaticResource ForegroundBrush}"/>
-        <Setter Property="BorderBrush"   Value="{StaticResource AccentBrush}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding"       Value="4,2"/>
+        <Setter Property="Background"          Value="{StaticResource SurfaceBrush}"/>
+        <Setter Property="Foreground"          Value="{StaticResource ForegroundBrush}"/>
+        <Setter Property="BorderBrush"         Value="{StaticResource AccentBrush}"/>
+        <Setter Property="BorderThickness"     Value="1"/>
+        <Setter Property="Padding"             Value="4,2"/>
+        <Setter Property="CaretBrush"          Value="{StaticResource ForegroundBrush}"/>
+        <Setter Property="SelectionBrush"      Value="{StaticResource AccentBrush}"/>
+        <Setter Property="SelectionTextBrush"  Value="{StaticResource ForegroundBrush}"/>
     </Style>
 
     <Style TargetType="Button">
@@ -64,10 +68,19 @@
     </Style>
 
     <Style TargetType="GroupBox">
-        <Setter Property="Foreground"    Value="{StaticResource ForegroundBrush}"/>
-        <Setter Property="BorderBrush"   Value="{StaticResource AccentBrush}"/>
+        <Setter Property="Foreground"      Value="{StaticResource ForegroundBrush}"/>
+        <Setter Property="BorderBrush"     Value="{StaticResource AccentBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding"       Value="6"/>
+        <Setter Property="Padding"         Value="6"/>
+        <Setter Property="HeaderTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}"
+                               Foreground="{StaticResource ForegroundBrush}"
+                               FontWeight="SemiBold"/>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style TargetType="CheckBox">
@@ -78,6 +91,43 @@
         <Setter Property="Background"  Value="{StaticResource SurfaceBrush}"/>
         <Setter Property="Foreground"  Value="{StaticResource ForegroundBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+    </Style>
+
+    <Style TargetType="ComboBoxItem">
+        <Setter Property="Background"  Value="{StaticResource SurfaceBrush}"/>
+        <Setter Property="Foreground"  Value="{StaticResource ForegroundBrush}"/>
+        <Setter Property="Padding"     Value="6,3"/>
+        <Style.Triggers>
+            <Trigger Property="IsHighlighted" Value="True">
+                <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="StatusBar">
+        <Setter Property="Background" Value="{StaticResource StatusBarBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource SecondaryFgBrush}"/>
+    </Style>
+
+    <Style TargetType="StatusBarItem">
+        <Setter Property="Foreground" Value="{StaticResource SecondaryFgBrush}"/>
+    </Style>
+
+    <Style TargetType="Separator">
+        <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="Opacity"    Value="0.5"/>
+    </Style>
+
+    <Style TargetType="ToolTip">
+        <Setter Property="Background"  Value="{StaticResource SurfaceBrush}"/>
+        <Setter Property="Foreground"  Value="{StaticResource ForegroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="Padding"     Value="6,4"/>
     </Style>
 
 </ResourceDictionary>
