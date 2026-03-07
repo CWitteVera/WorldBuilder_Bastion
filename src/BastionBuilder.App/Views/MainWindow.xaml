@@ -30,7 +30,7 @@
         </Grid.RowDefinitions>
 
         <!-- ── Toolbar ──────────────────────────────────────────────────── -->
-        <ToolBar Grid.Row="0" Background="#2C2C54" Foreground="White">
+        <ToolBar Grid.Row="0" Background="{StaticResource PrimaryBrush}" Foreground="White">
             <Button Content="New Bastion"    Command="{Binding NewBastionCommand}"    Margin="2"/>
             <Button Content="Save"           Command="{Binding SaveCommand}"          Margin="2"/>
             <Separator/>
@@ -221,7 +221,7 @@
         </Grid>
 
         <!-- ── Status bar ────────────────────────────────────────────────── -->
-        <StatusBar Grid.Row="2" Background="#1A1A2E">
+        <StatusBar Grid.Row="2" Background="{StaticResource StatusBarBrush}">
             <StatusBarItem>
                 <TextBlock Text="{Binding StatusMessage}" Foreground="#AAAACC" Padding="4,2"/>
             </StatusBarItem>
